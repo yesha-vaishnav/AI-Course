@@ -20,32 +20,32 @@ export class ChromaConnector {
   private collections: Map<string, Collection>;
 
   constructor() {
-    console.log("Initializing in-memory ChromaConnector...");
+    //console.log("Initializing in-memory ChromaConnector...");
     this.client = new ChromaClient(); // in-memory
     this.collections = new Map();
   }
 
   // Heartbeat
   async heartbeat() {
-    console.log("➡️ Heartbeat request");
+    //console.log("➡️ Heartbeat request");
     const response = { status: "ok" };
-    console.log("⬅️ Heartbeat response:", response);
+    //console.log("⬅️ Heartbeat response:", response);
     return response;
   }
 
   // Create a collection
   async createCollection(name: string) {
-    console.log("➡️ Create collection request:", { name });
+    //console.log("➡️ Create collection request:", { name });
     let collection: Collection;
     try {
       collection = await this.client.getCollection({ name });
-      console.log("Collection already exists:", name);
+      //console.log("Collection already exists:", name);
     } catch {
       collection = await this.client.createCollection({ name });
-      console.log("Created collection:", name);
+      //console.log("Created collection:", name);
     }
     this.collections.set(name, collection);
-    console.log("⬅️ Create collection response:", { name });
+    //console.log("⬅️ Create collection response:", { name });
     return { name };
   }
 
@@ -60,7 +60,7 @@ export class ChromaConnector {
         Authorization: `Bearer ${JINA_API_KEY}`,
       },
     });
-    console.log(response.data.data.map((item: any) => item.embedding));
+    //console.log(response.data.data.map((item: any) => item.embedding));
     return response.data.data.map((item: any) => item.embedding);
   }
 
@@ -77,23 +77,23 @@ export class ChromaConnector {
 
     // If embeddings not provided, generate them using Jina
     if (!embeddings) {
-      console.log("Generating embeddings using Jina API...");
+      //console.log("Generating embeddings using Jina API...");
       embeddings = await this.getEmbeddings(documents);
     }
 
-    console.log("➡️ Add documents request:", { collectionName, ids, documents, embeddings });
+    //console.log("➡️ Add documents request:", { collectionName, ids, documents, embeddings });
     const collection = this.collections.get(collectionName);
     if (!collection) throw new Error(`Collection not found: ${collectionName}`);
 
     await collection.add({ ids, documents, embeddings });
-    console.log("⬅️ Add documents response: success");
+    //console.log("⬅️ Add documents response: success");
 
     return { status: "success" };
   }
 
   // Query a collection
   async queryCollection(collectionName: string, params: QueryParams) {
-    console.log("➡️ Query request:", { collectionName, ...params });
+    //console.log("➡️ Query request:", { collectionName, ...params });
     const collection = this.collections.get(collectionName);
     if (!collection) throw new Error(`Collection not found: ${collectionName}`);
 
@@ -102,7 +102,7 @@ export class ChromaConnector {
       nResults: params.nResults,
     });
 
-    console.log("⬅️ Query response:", result);
+    //console.log("⬅️ Query response:", result);
     return result;
   }
 }
