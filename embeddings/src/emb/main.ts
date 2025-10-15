@@ -52,4 +52,4 @@ async function main() {
     saveDataToJson(dataWithEmbedding, 'embeddingCharacteristics.json');
 }
 
-main();
+// main();
